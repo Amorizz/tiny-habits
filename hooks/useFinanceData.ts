@@ -10,6 +10,7 @@ const defaultCategories: Category[] = [
   { id: "4", name: "Shopping", icon: "🛍️", color: "bg-purple-500" },
   { id: "5", name: "Health", icon: "🏥", color: "bg-pink-500" },
   { id: "6", name: "Income", icon: "💰", color: "bg-yellow-500" },
+  { id: "8", name: "Non classé", icon: "❓", color: "bg-gray-500" }, 
 ]
 
 const defaultTransactions: Transaction[] = [
@@ -85,10 +86,11 @@ export function useFinanceData() {
   const [coffeeCount, setCoffeeCount] = useState(23)
   const [goodDecisions, setGoodDecisions] = useState(12)
 
-  const addTransaction = (transaction: Omit<Transaction, "id">) => {
+  const addTransaction = (transaction: Omit<Transaction, "id">) => {                                  
     const newTransaction = {
       ...transaction,
       id: Date.now().toString(),
+      category: transaction.category || "Non classé", 
     }
     setTransactions((prev) => [newTransaction, ...prev])
   }
@@ -112,6 +114,59 @@ export function useFinanceData() {
   const totalIncome = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
   const totalExpenses = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + Math.abs(t.amount), 0)
   const balance = totalIncome - totalExpenses
+  const getUnclassifiedTransactions = () => {
+  return transactions.filter(t => t.category === "Non classé")
+}
+
+const refreshCategories = async () => {
+  const unclassified = getUnclassifiedTransactions();
+
+  if (unclassified.length === 0) {
+    console.log("Aucune transaction à classifier.");
+    return;
+  }
+
+  console.log("Transactions à classer :", unclassified);
+
+  try {
+    const response = await fetch("http://localhost:3001/api/classer-transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ transactions: unclassified })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur serveur : ${response.status}`);
+    }
+
+    const result = await response.json(); // [{ id, categorieId }, ...]
+
+    setTransactions(prevTransactions =>
+      prevTransactions.map(t => {
+        const found = result.find(r => r.id === t.id);
+        if (!found) return t;
+
+        // Récupère la catégorie complète avec id et nom
+        const cat = categories.find(c => c.id === found.categorieId);
+
+        return {
+          ...t,
+          categoryId: found.categorieId,
+          category: cat ? cat.name : t.category // Mets à jour aussi le nom de la catégorie
+        };
+      })
+    );
+
+  } catch (error) {
+    console.error("Erreur pendant la classification :", error);
+  }
+}
+
+
+
+
 
   return {
     transactions,
@@ -130,5 +185,7 @@ export function useFinanceData() {
     reorderWidgets,
     setCoffeeCount,
     setGoodDecisions,
+    getUnclassifiedTransactions,
+    refreshCategories,
   }
 }

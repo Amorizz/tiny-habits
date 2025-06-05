@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Home, CreditCard, PieChart, User, Search } from "lucide-react"
+import { Plus, Home, CreditCard, PieChart, User, Search, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -35,6 +35,7 @@ export default function EnhancedFinanceTracker() {
     addTransaction,
     updateWidget,
     reorderWidgets,
+    refreshCategories,
   } = useFinanceData()  
 
   const filteredTransactions = transactions.filter((transaction) => {
@@ -70,23 +71,30 @@ export default function EnhancedFinanceTracker() {
   const renderTransactions = () => (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">Transactions</h2>
-        <Dialog open={isAddTransactionOpen} onOpenChange={setIsAddTransactionOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <EnhancedTransactionForm
-              categories={categories}
-              onAddTransaction={addTransaction}
-              onClose={() => setIsAddTransactionOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+  <h2 className="text-xl font-bold">Transactions</h2>
+  <div className="flex gap-2">
+    <Dialog open={isAddTransactionOpen} onOpenChange={setIsAddTransactionOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">
+          <Plus className="h-4 w-4 mr-2" />
+          Ajouter
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <EnhancedTransactionForm
+          categories={categories}
+          onAddTransaction={addTransaction}
+          onClose={() => setIsAddTransactionOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
+
+    <Button size="sm" variant="outline" onClick={refreshCategories}>
+      <RefreshCw className="h-4 w-4 mr-2" />
+      Actualiser
+    </Button>
+  </div>
+</div>
 
       {/* Filters */}
       <Card>
@@ -179,6 +187,7 @@ export default function EnhancedFinanceTracker() {
         ))}
       </div>
     </div>
+    
   )
 
   const renderBudgets = () => (
