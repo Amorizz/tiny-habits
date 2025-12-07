@@ -28,3 +28,42 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Running the Project Locally
+
+To run this project locally, follow these steps:
+
+1. **Install dependencies** (using [pnpm](https://pnpm.io/) is recommended):
+   ```sh
+   pnpm install
+   ```
+   Or with npm:
+   ```sh
+   npm install
+   ```
+   Or with yarn:
+   ```sh
+   yarn install
+   ```
+
+2. **Start the development server:**
+   ```sh
+   pnpm dev
+   ```
+   Or with npm:
+   ```sh
+   npm run dev
+   ```
+   Or with yarn:
+   ```sh
+   yarn dev
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+4. To build for production:
+   ```sh
+   pnpm build
+   pnpm start
+   ```
+   (Or use `npm run build && npm start` or `yarn build && yarn start`)
