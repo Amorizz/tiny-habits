@@ -3,11 +3,15 @@
 
 Tiny Habits is a simple and visually appealing finance tracker designed for college students. Track your spending, set goals, and manage your budget with ease.
 
+![alt text](image.png)
+
 This MVP was created during our exchange semester at Shanghai University (Spring 2025) as part of the Innovation Period.
 
 🏆 Awards:
 - Best Public Speaking
 - Outstanding Business Potential
+
+Notes: the text is in French
 
 ## Running the Project Locally
 
